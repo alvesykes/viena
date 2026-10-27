@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}*,*::before,*::after{box-sizing:border-box}img{max-width:100%}</style>
+<title>Viena a Dois</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: single phone-first column, imperial yellow band at the top, days as a vertical timeline with a sticky day switcher */
+:root{
+  --paper:#f6f5ef; --card:#ffffff; --ink:#1d2b24; --muted:#5d6b62; --line:#dfe2d8;
+  --gold:#d9a521; --gold-soft:#f6e7b8; --green:#1f4d3a; --green-soft:#e3ece5;
+  --display:"Marcellus", Georgia, "Times New Roman", serif;
+  --body:"Source Sans 3", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121915; --card:#1a231e; --ink:#e9ece6; --muted:#9daa9f; --line:#2c3830;
+  --gold:#e8bb48; --gold-soft:#3a3018; --green:#8fc7a6; --green-soft:#1f2e26; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121915; --card:#1a231e; --ink:#e9ece6; --muted:#9daa9f; --line:#2c3830;
+  --gold:#e8bb48; --gold-soft:#3a3018; --green:#8fc7a6; --green-soft:#1f2e26; color-scheme:dark}
+
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+
+header.hero{background:var(--gold);color:#1d2b24}
+header.hero .wrap{padding-block:36px 28px;display:grid;gap:10px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,11vw,64px);line-height:1;margin:0;text-wrap:balance}
+.hero p{margin:0;max-width:52ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.facts span{background:rgba(255,255,255,.55);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600}
+
+nav.days{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+nav.days .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav.days a{flex:none;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px}
+nav.days a:hover,nav.days a:focus-visible{border-color:var(--green);outline:none;color:var(--green)}
+
+main .wrap{display:grid;gap:44px;padding-block:28px 56px}
+h2{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.15;margin:0;text-wrap:balance}
+.sec-head{display:grid;gap:4px;margin-bottom:16px}
+.sec-head .eyebrow{color:var(--green)}
+.sub{color:var(--muted);margin:0}
+
+/* timeline */
+.tl{list-style:none;margin:0;padding:0;border-left:2px solid var(--gold);margin-left:6px}
+.tl li{position:relative;padding:0 0 18px 20px;display:grid;grid-template-columns:58px 1fr;gap:10px}
+.tl li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--gold)}
+.tl li.walk::before{background:var(--gold)}
+.tl time{font-family:var(--mono);font-size:13px;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.tl b{display:block}
+.tl span.note{color:var(--muted);font-size:15px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.tag.pay{background:var(--gold-soft);color:var(--ink)}
+.tag.opt{border:1px solid var(--line);color:var(--muted)}
+.tag.t{background:var(--green-soft);color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;border:2px solid var(--gold);margin-right:6px;vertical-align:-1px}
+.legend i.f{background:var(--gold)}
+
+/* info list */
+.info{display:grid;gap:12px}
+.info div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.info dt{font-weight:700}
+.info dd{margin:0;min-width:0}
+@media (max-width:520px){.info div{grid-template-columns:1fr;gap:2px}}
+
+/* checklist */
+.check{display:grid;gap:8px}
+.check label{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--green);margin-top:2px;flex:none}
+.check input:checked+span{color:var(--muted);text-decoration:line-through}
+.check input:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* food */
+.food{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.food h3{font-family:var(--display);font-weight:400;font-size:21px;margin:0 0 8px}
+.food ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.food li b{display:block}
+.food li span{color:var(--muted);font-size:15px}
+
+/* budget */
+.budget{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.person{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.person h3{font-family:var(--display);font-weight:400;font-size:21px;margin:0 0 10px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.row span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.total{border:0;font-weight:700;font-size:17px;padding-top:12px}
+.both{margin-top:16px;background:var(--green);color:var(--paper);border-radius:12px;padding:16px 18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
+.both b{font-family:var(--display);font-weight:400;font-size:26px}
+.extras{margin:16px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:4px}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:16px}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+section{scroll-margin-top:70px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <span class="eyebrow">30 out – 3 nov 2026 · Hampton by Hilton City West</span>
+  <h1>Viena a dois</h1>
+  <p>Cinco dias, quase tudo a pé, com orçamento de estudante.</p>
+  <div class="facts"><span>Ida 7h00 → 11h30</span><span>Volta 12h30</span><span>Viena +1h</span></div>
+</div></header>
+
+<nav class="days" aria-label="Saltar para"><div class="wrap">
+  <a href="#sex">Sex 30</a><a href="#sab">Sáb 31</a><a href="#dom">Dom 1</a><a href="#seg">Seg 2</a><a href="#ter">Ter 3</a><a href="#bilhetes">Bilhetes</a><a href="#comer">Comer</a><a href="#orcamento">Orçamento</a>
+</div></nav>
+
+<main><div class="wrap">
+
+<section id="info">
+  <div class="sec-head"><span class="eyebrow">Antes de ir</span><h2>O essencial</h2></div>
+  <dl class="info">
+    <div><dt>Hotel</dt><dd>Hampton by Hilton Vienna City West, Diefenbachgasse 1-3. Metro Längenfeldgasse (U4, U6) a 2 minutos. Check-in 15h00, check-out 12h00, pequeno-almoço incluído.</dd></div>
+    <div><dt>Bilhete 7 dias</dt><dd>€25,20 na app WienMobil, um para cada. Escolham 30 de outubro como início. Cobre metro, elétrico e autocarro na cidade. Levem o cartão de cidadão.</dd></div>
+    <div><dt>Aeroporto</dt><dd>Railjet da ÖBB até Wien Meidling (cerca de 30 min, dois por hora) e uma paragem de U6 até Längenfeldgasse. O passe só cobre até ao limite da cidade: comprem também o bilhete aeroporto–limite da cidade (€2,30) nas máquinas da ÖBB, na ida e na volta, e validem antes de entrar. Evitem o S7, que por obras só vai até St. Marx.</dd></div>
+    <div><dt>Domingo</dt><dd>Feriado de Todos os Santos. Lojas fechadas, por isso comprem água e snacks no sábado.</dd></div>
+    <div><dt>A pé</dt><dd>Entre 6 e 10 km por dia. Sapatos confortáveis.</dd></div>
+  </dl>
+</section>
+
+<div class="legend"><span><i class="f"></i>percurso a pé</span><span><i></i>transporte ou pausa</span></div>
+
+<section id="sex">
+  <div class="sec-head"><span class="eyebrow">Sexta-feira, 30 de outubro</span><h2>Chegada e centro histórico</h2></div>
+  <ol class="tl">
+    <li><time>11:30</time><div><b>Chegada ao aeroporto</b><span class="note">Railjet até Meidling e U6 até Längenfeldgasse. Deixar as malas no hotel.</span></div></li>
+    <li><time>12:45</time><div><b>U4 até Kettenbrückengasse</b><span class="note">Daqui em diante, tudo a pé.</span></div></li>
+    <li class="walk"><time>13:30</time><div><b>Naschmarkt e Secession</b><span class="note">Almoço nas bancas do mercado.</span></div></li>
+    <li class="walk"><time>15:00</time><div><b>Karlskirche</b><span class="note">Por fora, 5 min a pé.</span></div></li>
+    <li class="walk"><time>15:30</time><div><b>Ópera e Kärntner Straße</b></div></li>
+    <li class="walk"><time>16:00</time><div><b>Stephansdom, Graben e Kohlmarkt</b><span class="note">Entrada livre na catedral. Espreitem a montra do Demel.</span></div></li>
+    <li class="walk"><time>17:00</time><div><b>Hofburg e Heldenplatz</b><span class="note">Ao anoitecer.</span></div></li>
+    <li class="walk"><time>18:00</time><div><b>Burggarten e terraço da Albertina</b><span class="note">Vista grátis sobre a Ópera.</span></div></li>
+    <li><time>19:00</time><div><b>Käsekrainer no Bitzinger</b><span class="note">Würstelstand ao lado da Albertina. Depois U4 até ao hotel.</span></div></li>
+  </ol>
+</section>
+
+<section id="sab">
+  <div class="sec-head"><span class="eyebrow">Sábado, 31 de outubro</span><h2>Schönbrunn, Neubau e Prater</h2></div>
+  <ol class="tl">
+    <li class="walk"><time>08:00</time><div><b>A pé até Schönbrunn</b><span class="note">Cerca de 20 minutos desde o hotel.</span></div></li>
+    <li class="walk"><time>08:30</time><div><b>Palácio, visita completa</b><span class="tag pay">pago</span><span class="note">Palace Ticket com hora marcada, cerca de 75 minutos.</span></div></li>
+    <li class="walk"><time>10:00</time><div><b>Jardins e Gloriette</b><span class="note">Subida a pé, vista grátis sobre a cidade.</span></div></li>
+    <li><time>12:45</time><div><b>Metro até Neubau</b><span class="note">Almoço: Schnitzel no Schnitzelwirt.</span></div></li>
+    <li class="walk"><time>14:00</time><div><b>Spittelberg, MuseumsQuartier, Mariahilfer Straße</b><span class="note">Último dia de lojas abertas até segunda.</span></div></li>
+    <li><time>17:30</time><div><b>U2 até ao Prater</b><span class="note">Último dia da época alta e noite de Halloween. Cada diversão paga-se à parte. Jantar lá.</span></div></li>
+    <li><time>19:30</time><div><b>Roda gigante</b><span class="tag opt">opcional</span><span class="note">€14,50, aberta até às 21h45.</span></div></li>
+  </ol>
+</section>
+
+<section id="dom">
+  <div class="sec-head"><span class="eyebrow">Domingo, 1 de novembro · feriado</span><h2>Belvedere, velas e concerto</h2></div>
+  <ol class="tl">
+    <li><time>09:30</time><div><b>Elétrico D até ao Belvedere</b></div></li>
+    <li class="walk"><time>10:00</time><div><b>Belvedere e jardins</b><span class="tag opt">museu opcional</span><span class="note">Descer a pé até ao Belvedere Inferior. O Beijo de Klimt está lá dentro (€19).</span></div></li>
+    <li class="walk"><time>12:00</time><div><b>Schwarzenbergplatz e almoço</b></div></li>
+    <li><time>13:30</time><div><b>Elétrico 71 até ao Zentralfriedhof</b><span class="note">Cemitério cheio de velas. Túmulos de Beethoven e Schubert, memorial de Mozart.</span></div></li>
+    <li><time>16:00</time><div><b>Descanso no hotel</b><span class="note">Mudar de roupa.</span></div></li>
+    <li class="walk"><time>18:30</time><div><b>Jantar em Josefstadt</b></div></li>
+    <li class="walk"><time>noite</time><div><b>Imperial Gala Konzert</b><span class="tag t">já pago</span><span class="note">Palais Auersperg, Auerspergstraße 1. Confirmem a hora no bilhete.</span></div></li>
+  </ol>
+</section>
+
+<section id="seg">
+  <div class="sec-head"><span class="eyebrow">Segunda-feira, 2 de novembro</span><h2>Ópera, Ring e pastelaria</h2></div>
+  <ol class="tl">
+    <li class="walk"><time>09:00</time><div><b>Visita guiada à Ópera</b><span class="tag pay">pago</span><span class="note">40 minutos. Estejam na esquina Opernring/Operngasse às 8h45.</span></div></li>
+    <li class="walk"><time>10:15</time><div><b>Volksgarten, Parlamento e Rathaus</b><span class="note">A pé pelo Ring.</span></div></li>
+    <li class="walk"><time>11:15</time><div><b>Universidade, Freyung e Am Hof</b></div></li>
+    <li class="walk"><time>12:30</time><div><b>Almoço com Mittagsmenü</b><span class="note">O menu de almoço dos dias úteis.</span></div></li>
+    <li class="walk"><time>13:45</time><div><b>Bairro judeu e Ruprechtskirche</b><span class="note">As ruelas mais antigas da cidade.</span></div></li>
+    <li class="walk"><time>14:30</time><div><b>Canal do Danúbio e Stadtpark</b><span class="note">Arte urbana e a estátua dourada de Strauss.</span></div></li>
+    <li class="walk"><time>15:30</time><div><b>Tarde de pastelaria</b><span class="note">Demel pelo ambiente, Aida para poupar.</span></div></li>
+    <li class="walk"><time>19:00</time><div><b>Jantar de despedida</b><span class="note">Gulasch ou Schnitzel.</span></div></li>
+  </ol>
+</section>
+
+<section id="ter">
+  <div class="sec-head"><span class="eyebrow">Terça-feira, 3 de novembro</span><h2>Regresso</h2></div>
+  <ol class="tl">
+    <li><time>08:00</time><div><b>Pequeno-almoço e check-out</b></div></li>
+    <li><time>09:30</time><div><b>Saída para o aeroporto</b><span class="note">U6 até Meidling e Railjet até ao aeroporto. Chegar por volta das 10h30 para o voo das 12h30.</span></div></li>
+  </ol>
+</section>
+
+<section id="bilhetes">
+  <div class="sec-head"><span class="eyebrow">Para marcar à medida que compram</span><h2>Bilhetes a tratar</h2></div>
+  <div class="check">
+    <label><input type="checkbox" id="c1"><span>Bilhete de 7 dias na WienMobil, um para cada</span></label>
+    <label><input type="checkbox" id="c2"><span>Bilhete aeroporto–limite da cidade (€2,30), ida</span></label>
+    <label><input type="checkbox" id="c3"><span>Schönbrunn, sábado às 8h30 (schoenbrunn.at)</span></label>
+    <label><input type="checkbox" id="c4"><span>Visita à Ópera, segunda às 9h00 (wiener-staatsoper.at)</span></label>
+    <label><input type="checkbox" id="c5"><span>ISIC para ela, se der a tempo</span></label>
+    <label><input type="checkbox" id="c6"><span>Bilhete aeroporto–limite da cidade (€2,30), volta</span></label>
+  </div>
+</section>
+
+<section id="comer">
+  <div class="sec-head"><span class="eyebrow">Obrigatório provar</span><h2>O que comer</h2></div>
+  <div class="food">
+    <div><h3>Salgados</h3><ul>
+      <li><b>Wiener Schnitzel</b><span>O prato nacional. Figlmüller é o famoso, Schnitzelwirt o barato.</span></li>
+      <li><b>Käsekrainer</b><span>Salsicha recheada com queijo, num Würstelstand.</span></li>
+      <li><b>Gulasch</b><span>Mais simples do que o húngaro, com pão ou Knödel.</span></li>
+      <li><b>Kaiserschmarrn</b><span>Panqueca desfeita e caramelizada com compota de ameixa.</span></li>
+      <li><b>Maroni</b><span>Castanhas assadas das bancas de rua.</span></li>
+    </ul></div>
+    <div><h3>Tarde de pastelaria</h3><ul>
+      <li><b>Sachertorte</b><span>Chocolate com compota de alperce.</span></li>
+      <li><b>Apfelstrudel</b><span>Quente e com natas.</span></li>
+      <li><b>Topfenstrudel</b><span>Strudel de requeijão.</span></li>
+      <li><b>Punschkrapfen</b><span>Bolinho cor-de-rosa com rum.</span></li>
+      <li><b>Esterházytorte</b><span>Merengue de amêndoa com creme.</span></li>
+      <li><b>Melange</b><span>O café típico, parecido com um cappuccino.</span></li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="orcamento">
+  <div class="sec-head"><span class="eyebrow">Por pessoa, sem o concerto</span><h2>Orçamento</h2></div>
+  <div class="budget">
+    <div class="person"><h3>Tu, com ISIC</h3>
+      <div class="row"><span>Transportes (7 dias e aeroporto)</span><span>€29,80</span></div>
+      <div class="row"><span>Schönbrunn completo</span><span>€31,50</span></div>
+      <div class="row"><span>Visita à Ópera</span><span>€14</span></div>
+      <div class="row"><span>Comida</span><span>€120–170</span></div>
+      <div class="row total"><span>Total</span><span>€196–246</span></div>
+    </div>
+    <div class="person"><h3>Ela, sem ISIC</h3>
+      <div class="row"><span>Transportes (7 dias e aeroporto)</span><span>€29,80</span></div>
+      <div class="row"><span>Schönbrunn completo</span><span>€42</span></div>
+      <div class="row"><span>Visita à Ópera</span><span>€14</span></div>
+      <div class="row"><span>Comida</span><span>€120–170</span></div>
+      <div class="row total"><span>Total</span><span>€206–256</span></div>
+    </div>
+  </div>
+  <div class="both"><span>Os dois juntos</span><b>€402–502</b></div>
+  <ul class="extras">
+    <li>Fora da conta: roda gigante (€14,50), diversões do Prater, Belvedere por dentro (€19).</li>
+    <li>Com ISIC, ela paga €31,50 em Schönbrunn. Sem ISIC, o Classic Pass (€49) junta a Gloriette e os jardins privados por mais €7.</li>
+    <li>Contem com uma margem de €50 por pessoa para extras e compras.</li>
+  </ul>
+</section>
+
+<footer>Preços confirmados em outubro de 2026. Pequeno-almoço incluído no hotel.</footer>
+</div></main>
+
+<script>
+document.querySelectorAll('.check input').forEach(function(cb){
+  try{ cb.checked = localStorage.getItem('viena-'+cb.id)==='1'; }catch(e){}
+  cb.addEventListener('change',function(){ try{ localStorage.setItem('viena-'+cb.id, cb.checked?'1':'0'); }catch(e){} });
+});
+</script>
+</body>
+</html>
